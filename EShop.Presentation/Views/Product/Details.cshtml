@@ -1,0 +1,116 @@
+﻿@model EShop.ViewModels.ProductDetailsViewModel
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            @if (Model.Images != null && Model.Images.Count > 0)
+            {
+                <img src="@Model.Images[0]" class="img-fluid rounded shadow-sm" />
+            }
+        </div>
+        <div class="col-md-6">
+            <h2>@Model.Name</h2>
+            <p>@Model.Description</p>
+            <p><strong>Category:</strong> @Model.CategoryName</p>
+            <p><strong>Vendor:</strong> @Model.VendorName</p>
+            <p><strong>Price:</strong> @Model.Price EGP</p>
+            <p><strong>Quantity:</strong> @Model.Quantity</p>
+            <p><strong>Created At:</strong> @Model.CreatedAt.ToString("g")</p>
+        </div>
+    </div>
+
+    <hr />
+
+    <h4>Comments</h4>
+
+    <div class="mb-3">
+        <label for="username">Your Name:</label>
+        <input type="text" id="username" class="form-control" placeholder="Enter your name" />
+    </div>
+
+    <div class="mb-3">
+        <label for="comment">Write a Comment:</label>
+        <textarea id="comment" class="form-control" rows="3" placeholder="Type something..."></textarea>
+    </div>
+
+    <button onclick="sendComment()" class="btn btn-success">Send</button>
+
+    <hr />
+
+    <ul id="commentList" class="list-group">
+        @foreach (var c in Model.Comments)
+        {
+            <li class="list-group-item">
+                <strong>@c.UserName</strong> (@c.CreatedAt.ToString("g")):<br />
+                @c.Message
+            </li>
+        }
+    </ul>
+</div>
+@section Scripts {
+    <script>
+        var productId = @Model.Id;
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/commentHub")
+            .build();
+
+        connection.start().then(function () {
+            connection.invoke("JoinProductGroup", productId);
+        });
+
+        connection.on("ReceiveComment", function (user, msg, time) {
+            const li = `<li class="list-group-item"><strong>${user}</strong> (${time}):<br/>${msg}</li>`;
+            document.getElementById("commentList").innerHTML += li;
+        });
+
+        function sendComment() {
+            const user = document.getElementById("username").value.trim();
+            const msg = document.getElementById("comment").value.trim();
+
+            if (!user || !msg) {
+                alert("Please enter your name and comment.");
+                return;
+            }
+
+            connection.invoke("SendComment", productId, user, msg);
+            document.getElementById("comment").value = "";
+        }
+    </script>
+}
+
+
+@* @section Scripts { *@
+
+@*     <script src="~/lib/microsoft-signalr/signalr.min.js"></script> *@
+@*     <script> *@
+@*         var productId = @Model.Id; *@
+@*         var connection = new signalR.HubConnectionBuilder() *@
+@*             .withUrl("/commentHub") *@
+@*             .build(); *@
+
+@*         connection.start().then(function () { *@
+@*             connection.invoke("JoinProductGroup", productId); *@
+@*         }); *@
+
+@*         connection.on("ReceiveComment", function (user, msg, time) { *@
+@*             const li = `<li class="list-group-item"><strong>${user}</strong> (${time}):<br/>${msg}</li>`; *@
+@*             document.getElementById("commentList").innerHTML += li; *@
+@*         }); *@
+
+@*         function sendComment() { *@
+@*             const user = document.getElementById("username").value.trim(); *@
+@*             const msg = document.getElementById("comment").value.trim(); *@
+
+@*             if (!user || !msg) { *@
+@*                 alert("Please enter your name and comment."); *@
+@*                 return; *@
+@*             } *@
+
+@*             connection.invoke("SendComment", productId, user, msg); *@
+@*             document.getElementById("comment").value = ""; *@
+@*         } *@
+@*     </script> *@
+@* } *@

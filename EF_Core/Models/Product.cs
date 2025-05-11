@@ -25,6 +25,7 @@ namespace EF_Core.Models
         public virtual ICollection<OrderItem> OrderItems { get; set; }
         public virtual ICollection<CartItem> CartList { get; set; }
         public virtual ICollection<FavoriteItem> FavoriteList { get; set; }
+        public virtual ICollection<ProductComment> Comments { get; set; }
 
     }
 

@@ -1,6 +1,7 @@
 using EF_Core;
 using EF_Core.Models;
 using EShop.Manegers;
+using EShop.Presentation.Hubs;
 using EShop.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,7 @@ builder.Services.AddScoped(typeof(CategoryManager));
 
 builder.Services.AddScoped(typeof(AccountServices));
 
+builder.Services.AddSignalR();
 
 #endregion
 
@@ -42,6 +44,7 @@ app.UseStaticFiles();//Force WWWRoot
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHub<CommentHub>("/commentHub");
 
 
 app.MapControllerRoute(

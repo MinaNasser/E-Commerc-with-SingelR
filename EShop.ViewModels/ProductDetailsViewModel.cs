@@ -1,4 +1,6 @@
-﻿namespace EShop.ViewModels
+﻿using EF_Core.Models;
+
+namespace EShop.ViewModels
 {
     public class ProductDetailsViewModel
     {
@@ -15,7 +17,8 @@
         public DateTime CreatedAt { get; set; }
 
 
-        public  List<string> Images { get; set; } 
+        public  List<string> Images { get; set; }
+        public List<ProductComment> Comments { get; set; }
 
     }
 }

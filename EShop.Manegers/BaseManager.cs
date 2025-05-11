@@ -75,5 +75,23 @@ namespace EShop.Manegers
             table.Remove(row);
             dbcontext.SaveChanges();
         }
+
+
+        public T GetById(Expression<Func<T, bool>> predicate)
+        {
+            return table.FirstOrDefault(predicate);
+        }
+        public T GetByIdWithIncludes(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = table;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return query.FirstOrDefault(predicate);
+        }
+
     }
 }

@@ -27,6 +27,7 @@ namespace EF_Core
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
+        public DbSet<ProductComment> ProductComments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,6 +42,7 @@ namespace EF_Core
             modelBuilder.ApplyConfiguration(new CartItemConfigration());
             modelBuilder.ApplyConfiguration(new FavoriteItemConfigration());
             modelBuilder.ApplyConfiguration(new ReviewConfigration());
+            modelBuilder.ApplyConfiguration(new ProductCommentConfiguration());
 
             //init Create Tables with some Data
             modelBuilder.DataSeeding();

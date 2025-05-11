@@ -38,8 +38,10 @@ namespace EShop.Presentation.Controllers
                 var res=  await accountService.CreateAccount(user);
                 if (res.Succeeded)
                 {
-                    return RedirectToAction("login");
+                    TempData["Success"] = "Registration completed successfully. Please login.";
+                    return RedirectToAction("Login", "Account");
                 }
+
                 else
                 {
                     foreach (var item in res.Errors)

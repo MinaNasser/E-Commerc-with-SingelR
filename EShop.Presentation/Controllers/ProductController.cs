@@ -1,4 +1,5 @@
-﻿using EShop.Manegers;
+﻿using EF_Core.Models;
+using EShop.Manegers;
 using EShop.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ namespace EShop.Presentation.Controllers
     {
         private ProductManager ProductManager;
         private CategoryManager CategoryManager;
-        public ProductController(ProductManager pmanager,CategoryManager cmanager )
+        private VendorManager VendorManager;
+        public ProductController(ProductManager pmanager, CategoryManager cmanager , VendorManager vendor)
         {
             ProductManager = pmanager;
             CategoryManager = cmanager;
+            VendorManager = vendor;
         }
 
         //    .... /product/index
@@ -27,12 +30,12 @@ namespace EShop.Presentation.Controllers
         {
             ViewData["CategoriesList"] = GetCategories();
 
-            var list = ProductManager.Search(categoryId:categoryId, vendorId:vendorId,
-                searchText: searchText,price:price,pageNumber:pageNumber,pageSize:pageSize);
+            var list = ProductManager.Search(categoryId: categoryId, vendorId: vendorId,
+                searchText: searchText, price: price, pageNumber: pageNumber, pageSize: pageSize);
             return View(list);
         }
 
-        [Authorize(Roles ="Vendor")]
+        [Authorize(Roles = "Provider")]
         public IActionResult VendorList(string searchText = "", decimal price = 0,
            int categoryId = 0, int pageNumber = 1,
            int pageSize = 3)
@@ -46,7 +49,7 @@ namespace EShop.Presentation.Controllers
         }
 
 
-        [Authorize (Roles ="Vendor,Admin")]
+        [Authorize(Roles = "Provider,Admin")]
         [HttpGet]
         public IActionResult Add()
         {
@@ -59,45 +62,64 @@ namespace EShop.Presentation.Controllers
             //no cast
             return View();
         }
-        [Authorize(Roles = "Vendor,Admin")]
+        [Authorize(Roles = "Provider,Admin")]
 
         [HttpPost]
         public async Task<IActionResult> Add(AddProductViewModel viewModel)
         {
-            viewModel.VendorId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            string vendorId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            viewModel.VendorId = vendorId;
+
+            // ✅ تحقق من وجود Vendor باستخدام VendorManager
+            var vendor = VendorManager.GetById(v => v.UserId == vendorId);
+            if (vendor == null)
+            {
+                VendorManager.Add(new Vendor
+                {
+                    UserId = vendorId
+                });
+            }
+
             if (ModelState.IsValid)
             {
-                //add to db
-                //.../Images/Products/xyz.png
-                //
                 foreach (var file in viewModel.Attachments)
                 {
-                    FileStream fileStream = new FileStream(
-                            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images" ,"Products", file.FileName),
-                            FileMode.Create);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Products", file.FileName);
 
+                    using var fileStream = new FileStream(savePath, FileMode.Create);
                     file.CopyTo(fileStream);
 
-                    fileStream.Position = 0;
-
-                    //save path to database;
                     viewModel.Paths.Add($"/Images/Products/{file.FileName}");
-
                 }
 
                 ProductManager.Add(viewModel.ToModel());
-
-
-                return RedirectToAction("index");
+                return RedirectToAction("Index");
             }
 
             ViewData["CategoriesList"] = GetCategories();
             return View();
         }
+
         private List<SelectListItem> GetCategories()
         {
             return CategoryManager.Get()
-    .Select(cat => new SelectListItem(cat.Name, cat.Id.ToString())).ToList();
+            .Select(cat => new SelectListItem(cat.Name, cat.Id.ToString())).ToList();
         }
+        public IActionResult Details(int id)
+        {
+            //var product = ProductManager.GetById(p => p.Id == id);
+            //if (product == null) return NotFound();
+
+            //return View(product);
+            var product = ProductManager.GetByIdWithIncludes(
+                p => p.Id == id,
+                p => ((Product)(object)p).Comments
+            );
+
+            return View(product);
+
+        }
+
+
     }
 }

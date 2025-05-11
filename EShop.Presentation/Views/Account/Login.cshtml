@@ -3,29 +3,63 @@
 }
 @model UserLoginVM
 
-
+<!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    </head>
-    <body>
-        <div class="container">
-    <form asp-action="Login" asp-controller="Account" method="post">
-        <div asp-validation-summary="All"></div>
- 
-        <div class="mb-3">
-            <label asp-for="Method" class="form-label"></label>
-            <input class="form-control" asp-for="Method">
-            <span asp-validation-for="Method" class="text-danger"></span>
-        </div>
+<head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
 
-        <div class="mb-3">
-            <label asp-for="Password" class="form-label"></label>
-            <input class="form-control" asp-for="Password">
-            <span asp-validation-for="Password" class="text-danger"></span>
+        .login-container {
+            max-width: 400px;
+            margin-top: 80px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container d-flex justify-content-center">
+        <div class="login-container">
+            <h3 class="text-center mb-4">🔐 Login</h3>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success text-center">
+                    @TempData["Success"]
+                </div>
+            }
+
+            <form asp-action="Login" asp-controller="Account" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Method" class="form-label">Email or Username</label>
+                    <input class="form-control" asp-for="Method" placeholder="Enter your email or username" />
+                    <span asp-validation-for="Method" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <input class="form-control" asp-for="Password" type="password" placeholder="Enter your password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+
+                <div class="mt-3 text-center">
+                    <a asp-action="Register" asp-controller="Account">Don't have an account? Register here</a>
+                </div>
+            </form>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
     </div>
-    </body>
+
+</body>
 </html>
