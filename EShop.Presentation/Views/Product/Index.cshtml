@@ -1,0 +1,92 @@
+﻿
+@{
+    string userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
+    string path = "";
+    if(userRole == "Client"){
+        Layout = "_UserLayout";
+        path = "index";
+    }
+    else
+    {
+        Layout = "_AdminLayout";
+        path = "VendorList";
+    }
+    var list = ViewData["CategoriesList"] as List<SelectListItem>;
+    bool canNext = !(Model.PageNumber * Model.PageSize < Model.Total);
+    bool canBack = Model.PageNumber <= 1;
+
+    int PageCountabdelkhalk = (int)Math.Ceiling ((double)Model.Total / Model.PageSize) ;
+    int PageCountosama = (int)(Model.Total / Model.PageSize) + (int)(Model.Total % Model.PageSize);
+    
+
+}
+@model PaginationViewModel<ProductDetailsViewModel>
+
+<h1>Product List</h1>
+
+
+<form  class="row g-3" asp-action="@path" asp-controller="Product" method="get">
+
+    <div class="col-md-4">
+        <label >Search Text</label>
+        <input type="text" class="form-control" name="searchText">
+    </div>
+    <div class="col-md-4">
+        <label>Price</label>
+        <input type="number" class="form-control" name="Price">
+    </div>
+    <div class="col-md-4">
+        <label>Category</label>
+        <select class="form-control" asp-items="list" name="categoryId">
+            <option value="0" disabled selected>Select One Category</option>
+        </select>
+    </div>
+    <input hidden name="pagenumber" value="@Model.PageNumber" />
+    <input type="submit" class="btn btn-success" name="Filter">
+ 
+
+</form>
+
+<div class="container">
+    <div class="row">
+        @foreach(var prd in Model.Data)
+        {
+
+            <div class="card col-4">
+                @if(prd.Images != null && prd.Images.Count >= 1)
+                {
+                    <img src="@prd.Images[0]" class="card-img-top" alt="...">
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@prd.Name</h5>
+                    <p class="card-text">@prd.Description</p>
+                    <p class="card-text">Provided by: @prd.VendorName</p>
+                    <p class="card-text">Category Name : @prd.CategoryName</p>
+                    <p class="card-text">@prd.Price $</p>
+                    <p class="card-text">@prd.Quantity in stock</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        }
+    </div>
+<div class="d-flex justify-content-center align-items-center">
+        <button class="btn btn-primary" onclick="page('back')" disabled="@canBack">Back</button>
+        <button class="btn btn-primary" onclick="page('next')" disabled="@canNext">Next</button>
+</div>
+</div>
+
+@section scripts{
+    <script>
+        let form= document.getElementsByTagName("form")[0]
+
+        function page(btn){
+            if(btn == "next"){
+                form.pagenumber.value++;
+            }
+            else{
+                form.pagenumber.value--;
+            }
+            form.submit()
+        }
+    </script>
+}

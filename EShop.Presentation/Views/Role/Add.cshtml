@@ -1,0 +1,58 @@
+﻿@{
+    Layout = null;
+}
+@model List<RoleViewModel>
+
+<html>
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+</head>
+<body>
+
+    <div class="container">
+        <h1>System Roles</h1>
+
+        @if (ViewBag.Invalid  == 1)
+        {
+            <div class="alert alert-danger" role="alert">
+                Sorry Can Not Add This Role !!!!!
+            </div>
+        }
+        else if (ViewBag.Invalid == 2)
+        {
+            <div class="alert alert-success" role="alert">
+                Role Added Succssfully
+            </div>
+        }
+        <form asp-action="Add" asp-controller="Role">
+            <div class="mb-3">
+                <label class="form-label">Role Name</label>
+                <input type="text" class="form-control" name="roleName">
+            </div>
+            <input type="submit"  value="Add Role" />
+        </form>
+
+
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th scope="row">@item.Id</th>
+                        <td>@item.Name</td>
+                        <td></td>
+                    </tr>}
+            
+        </tbody>
+    </table>
+    </div>
+    </body>
+</html>

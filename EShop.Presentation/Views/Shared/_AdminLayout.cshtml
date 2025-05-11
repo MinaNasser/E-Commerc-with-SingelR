@@ -1,0 +1,34 @@
+﻿@using System.Security.Claims
+@{
+    string username = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
+}
+
+<html>
+    <head>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/dashboard.css" />
+        @RenderSection("styles",false)
+    </head>
+    <body>
+        <div class="container-fluid">
+        <div class="row" style="height:100vh">
+            <div class="col-3 sidebar">
+                    <ul>
+                        @*  <a href=""></> *@
+                    <h3>Welcome @username</h3>
+                            
+                    <li> <a asp-controller= "category" asp-action="list">Category List</a>    </li>
+                    <li>  <a asp-controller="category" asp-action="add"> add Category</a>  </li>
+                    <li> <a asp-controller="Product" asp-action="VendorList">Product List</a>    </li>
+                    <li>  <a asp-controller="Product" asp-action="add"> add Product</a>  </li>
+
+                </ul>
+                </div>
+                <div class="col-9">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+        @RenderSection("scripts",false)
+    </body>
+</html>

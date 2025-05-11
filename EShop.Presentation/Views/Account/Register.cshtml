@@ -1,0 +1,51 @@
+﻿@{
+    Layout = null;
+    List<SelectListItem> listItems = ViewData["roles"] as List<SelectListItem>;
+}
+@model UserRegisterVM
+
+
+<html>
+    <head>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    </head>
+    <body>
+        <div class="container">
+    <form asp-action="register" asp-controller="Account" method="post">
+        <div asp-validation-summary="All"></div>
+        <div class="mb-3">
+            <label asp-for="UserName" class="form-label"></label>
+            <input class="form-control" asp-for="UserName">
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input class="form-control" asp-for="Email">
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <input class="form-control" asp-for="PhoneNumber">
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label"></label>
+            <input class="form-control" asp-for="Password">
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ConformPassord" class="form-label"></label>
+            <input class="form-control" asp-for="ConformPassord">
+            <span asp-validation-for="ConformPassord" class="text-danger"></span>
+        </div>
+
+            <div class="mb-3">
+                <label asp-for="Role" class="form-label"></label>
+                <select class="form-control" asp-for="Role" asp-items="@listItems"></select>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    </div>
+    </body>
+</html>

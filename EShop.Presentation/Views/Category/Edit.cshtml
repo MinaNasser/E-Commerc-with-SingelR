@@ -1,0 +1,12 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+@model Category;
+
+
+<form asp-controller="category" asp-action="edit" method="post">
+    <input class="form-control" asp-for="Id" hidden />
+    <input class="form-control" asp-for="Name" />
+    <input class="form-control" asp-for="Description" />
+    <input class="btn btn-info" type="submit" value="Edit category" />
+</form>

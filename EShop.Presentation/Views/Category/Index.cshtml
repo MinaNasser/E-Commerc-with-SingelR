@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+@model List<Category>;
+
+@section styles{
+<style>
+    .test{
+    color:aqua;
+    }
+</style>
+}
+
+
+<h1 class="test" >Category List</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Actions
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var caterogy in Model)
+        {
+            <tr>
+                <th scope="row">@caterogy.Id</th>
+                <td colspan="2">@caterogy.Name</td>
+                <td colspan="2">@caterogy.Description</td>
+
+                <td>
+                    <a asp-action="edit" asp-controller="category" asp-route-Id="@caterogy.Id" asp-route-Name="tttt">Edit </a>
+                </td>
+            </tr>
+            
+        }
+    </tbody>
+</table>
+

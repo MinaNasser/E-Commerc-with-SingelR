@@ -1,0 +1,31 @@
+﻿@{
+    Layout = null;
+}
+@model UserLoginVM
+
+
+<html>
+    <head>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    </head>
+    <body>
+        <div class="container">
+    <form asp-action="Login" asp-controller="Account" method="post">
+        <div asp-validation-summary="All"></div>
+ 
+        <div class="mb-3">
+            <label asp-for="Method" class="form-label"></label>
+            <input class="form-control" asp-for="Method">
+            <span asp-validation-for="Method" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label"></label>
+            <input class="form-control" asp-for="Password">
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    </div>
+    </body>
+</html>

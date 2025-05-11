@@ -1,0 +1,42 @@
+﻿@{
+    Layout = "_AdminLayout";
+    var selectListItems = ViewData["CategoriesList"] as List<SelectListItem>;
+}
+@model AddProductViewModel
+
+<h1>@ViewBag.Title</h1>
+<h1>Add New Product</h1>
+
+<form asp-action="add" asp-controller="product" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label class="form-label" asp-for="Name"></label>
+        <input class="form-control" asp-for="Name"/>
+        <span class="text-danger" asp-validation-for="Name"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" asp-for="Description"></label>
+        <textarea class="form-control" asp-for="Description" ></textarea>
+        <span class="text-danger" asp-validation-for="Description"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" asp-for="Price"></label>
+        <input class="form-control" asp-for="Price" />
+        <span class="text-danger" asp-validation-for="Price"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" asp-for="Quantity"></label>
+        <input class="form-control" asp-for="Quantity" />
+        <span class="text-danger" asp-validation-for="Quantity"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" asp-for="CategoryId"></label>
+        <select class="form-control" asp-for="CategoryId" asp-items="@selectListItems" ></select>
+        <span class="text-danger" asp-validation-for="CategoryId"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" asp-for="Attachments"></label>
+        <input accept="image/*" class="form-control" asp-for="Attachments" />
+        <span class="text-danger" asp-validation-for="Attachments"></span>
+    </div>
+    <input class="btn btn-primary" type="submit" value="Add New Product"/>
+</form>
