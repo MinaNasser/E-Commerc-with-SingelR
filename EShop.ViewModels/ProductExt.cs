@@ -30,17 +30,18 @@ namespace EShop.ViewModels
         {
             return new ProductDetailsViewModel
             {
-                Id= viewModel.Id,
+                Id = viewModel.Id,
                 Name = viewModel.Name,
                 Description = viewModel.Description,
-                CategoryName = viewModel.Category.Name,
+                CategoryName = viewModel.Category?.Name ?? "No Category",
                 Price = viewModel.Price,
                 Quantity = viewModel.Quantity,
-                VendorName = viewModel.Vendor.User.UserName ?? "Not Provided",
+                VendorName = viewModel.Vendor?.User?.UserName ?? "Not Provided",
                 CreatedAt = viewModel.CreatedAt,
-                Images = viewModel.Attachments.Select(i=> i.Image ).ToList()
-                //Attachments
+                Images = viewModel.Attachments?.Select(i => i.Image).ToList() ?? new List<string>(),
+                Comments = viewModel.Comments?.OrderByDescending(c => c.CreatedAt).ToList() ?? new List<ProductComment>()
             };
         }
+
     }
 }

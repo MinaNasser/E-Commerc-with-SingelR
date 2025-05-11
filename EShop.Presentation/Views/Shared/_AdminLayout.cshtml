@@ -1,34 +1,92 @@
 ﻿@using System.Security.Claims
 @{
-    string username = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
+    string username = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 }
 
 <html>
-    <head>
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="~/css/dashboard.css" />
-        @RenderSection("styles",false)
-    </head>
-    <body>
-        <div class="container-fluid">
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        :root {
+        --primary-color: #023059;
+        --accent-color: #EFB036;
+        --background-color: #F7F7F8;
+        --secondary-color: #9197B3;
+        }
+
+        body {
+        background-color: var(--background-color);
+        }
+
+        .sidebar {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 20px;
+        }
+
+        .sidebar h3 {
+        color: var(--accent-color);
+        margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+        list-style: none;
+        padding-left: 0;
+        }
+
+        .sidebar li {
+        margin: 10px 0;
+        }
+
+        .sidebar a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        }
+
+        .sidebar a:hover {
+        color: var(--accent-color);
+        }
+
+        .col-9 {
+        background-color: white;
+        padding: 30px;
+        border-left: 4px solid var(--accent-color);
+        }
+    </style>
+
+    @RenderSection("styles", false)
+</head>
+<body>
+    <div class="container-fluid">
         <div class="row" style="height:100vh">
             <div class="col-3 sidebar">
-                    <ul>
-                        @*  <a href=""></> *@
-                    <h3>Welcome @username</h3>
-                            
-                    <li> <a asp-controller= "category" asp-action="list">Category List</a>    </li>
-                    <li>  <a asp-controller="category" asp-action="add"> add Category</a>  </li>
-                    <li> <a asp-controller="Product" asp-action="VendorList">Product List</a>    </li>
-                    <li>  <a asp-controller="Product" asp-action="add"> add Product</a>  </li>
+                <h3>Welcome @username</h3>
+                <ul>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                        if (role == "client")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="product" asp-action="index">Products</a>
+                            </li>
+                        }
+                    
+                    
+                    }
+                    @* <li><a asp-controller="category" asp-action="list">Category List</a></li> *@
+                    @* <li><a asp-controller="category" asp-action="add">Add Category</a></li> *@
 
+                    @* <li><a asp-controller="Product" asp-action="VendorList">Product List</a></li> *@
+                    @* <li><a asp-controller="Product" asp-action="add">Add Product</a></li> *@
                 </ul>
-                </div>
-                <div class="col-9">
-                    @RenderBody()
-                </div>
+            </div>
+            <div class="col-9">
+                @RenderBody()
             </div>
         </div>
-        @RenderSection("scripts",false)
-    </body>
+    </div>
+    @RenderSection("scripts", false)
+</body>
 </html>

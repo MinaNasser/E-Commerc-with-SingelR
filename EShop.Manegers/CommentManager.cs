@@ -1,21 +1,22 @@
 ﻿using EF_Core;
 using EF_Core.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Entity;
 
 namespace EShop.Manegers
 {
     public class CommentManager : BaseManager<ProductComment>
     {
-        private readonly EShopContext _context;
+        private readonly EShopContext _dbContext;
 
         public CommentManager(EShopContext context) : base(context)
         {
-            _context = context;
+            _dbContext = context;
         }
 
         public IEnumerable<ProductComment> GetCommentsByProductId(int productId, int pageSize = 10, int pageNumber = 1)
         {
-            var query = _context.ProductComments
+            var query = _dbContext.ProductComments
                 .Where(c => c.ProductId == productId)
                 .OrderByDescending(c => c.CreatedAt)
                 .Skip((pageNumber - 1) * pageSize)
@@ -24,18 +25,11 @@ namespace EShop.Manegers
             return query.ToList();
         }
 
-        public void AddComment(string userName, string message, int productId)
+        public async Task AddAsync(ProductComment comment)
         {
-            var comment = new ProductComment
-            {
-                UserName = userName,
-                Message = message,
-                ProductId = productId,
-                CreatedAt = DateTime.Now
-            };
-
-            _context.ProductComments.Add(comment);
-            _context.SaveChanges();
+            await _dbContext.ProductComments.AddAsync(comment);
+            await _dbContext.SaveChangesAsync();
         }
+
     }
 }

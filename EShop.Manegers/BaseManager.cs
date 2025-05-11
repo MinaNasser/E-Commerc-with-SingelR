@@ -59,11 +59,12 @@ namespace EShop.Manegers
             if (filter == null) return table.AsQueryable();
             else return table.Where(filter);
         }
-        public void Add(T newRow)
+        public async Task AddAsync(T newRow)
         {
-            table.Add(newRow);
-            dbcontext.SaveChanges();
+            await table.AddAsync(newRow);
+            await dbcontext.SaveChangesAsync();
         }
+
         public void Edit(T newRow)
         {
             table.Update(newRow);

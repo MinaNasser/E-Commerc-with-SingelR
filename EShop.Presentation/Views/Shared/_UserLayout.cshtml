@@ -2,12 +2,66 @@
 <html>
 <head>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        :root {
+            --primary-color: #023059;
+            --accent-color: #EFB036;
+            --background-color: #F7F7F8;
+            --secondary-color: #9197B3;
+        }
+
+        body {
+            background-color: var(--background-color);
+        }
+
+        .navbar {
+            background-color: var(--primary-color) !important;
+        }
+
+            .navbar .nav-link {
+                color: white !important;
+            }
+
+                .navbar .nav-link.active,
+                .navbar .nav-link:hover {
+                    color: var(--accent-color) !important;
+                }
+
+        .navbar-brand {
+            color: var(--accent-color) !important;
+        }
+
+        .btn-outline-success {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+            .btn-outline-success:hover {
+                background-color: var(--accent-color);
+                color: white;
+            }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+            footer a {
+                color: var(--accent-color);
+                text-decoration: underline;
+            }
+
+        input.form-control {
+            border-color: var(--secondary-color);
+        }
+    </style>
+
     @RenderSection("styles", false)
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <a class="navbar-brand" href="#">PTP 45</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -16,7 +70,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" asp-controller="home" asp-action="index">Home</a>
+                        <a class="nav-link active" asp-controller="home" asp-action="index">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="home" asp-action="privacy">Privacy</a>
@@ -25,19 +79,19 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                        @* <p class="text-danger">Detected Role: @role</p> *@
                         if (role == "client")
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="product" asp-action="index">Products</a>
                             </li>
                         }
-                        else
+
+                        else if (role == "provider")
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="product" asp-action="VendorList">Dashboard</a>
-                            </li>
+                            <li><a asp-controller="Product" asp-action="VendorList">Product List</a></li>
+                            <li><a asp-controller="Product" asp-action="Add">Add Product</a></li>
                         }
+                        
 
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="account" asp-action="signout">Sign Out</a>
@@ -66,10 +120,10 @@
         @RenderBody()
     </main>
 
-    <footer class="navbar bg-body-tertiary mt-5">
+    <footer class="navbar mt-5">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1">
-                &copy; Copyright 2025 PTP 45 -
+                &copy; 2025 PTP 45 -
                 <a asp-area="admin" asp-controller="home" asp-action="index">Aswan</a>
                 <a href="/admin/home/index">(Backup Link)</a>
             </span>
@@ -77,7 +131,6 @@
     </footer>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     @RenderSection("scripts", false)
 </body>
 </html>

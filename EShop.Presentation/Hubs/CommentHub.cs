@@ -1,16 +1,22 @@
 ﻿using EF_Core;
 using EF_Core.Models;
+using EShop.Manegers;
 using Microsoft.AspNetCore.SignalR;
 
 namespace EShop.Presentation.Hubs
 {
     public class CommentHub : Hub
     {
-        private readonly EShopContext _context;
+        private readonly CommentManager _CommentManager;
 
-        public CommentHub(EShopContext context)
+        public CommentHub(CommentManager CommentManager)
         {
-            _context = context;
+            _CommentManager = CommentManager;
+        }
+        public override Task OnConnectedAsync()
+        {
+            Console.WriteLine($"Client connected: {Context.ConnectionId}");
+            return base.OnConnectedAsync();
         }
 
         public async Task JoinProductGroup(int productId)
@@ -20,9 +26,6 @@ namespace EShop.Presentation.Hubs
 
         public async Task SendComment(int productId, string userName, string message)
         {
-            if (string.IsNullOrWhiteSpace(message) || string.IsNullOrWhiteSpace(userName))
-                return;
-
             var comment = new ProductComment
             {
                 ProductId = productId,
@@ -31,11 +34,12 @@ namespace EShop.Presentation.Hubs
                 CreatedAt = DateTime.Now
             };
 
-            _context.ProductComments.Add(comment);
-            await _context.SaveChangesAsync();
+           await _CommentManager.AddAsync(comment);
+            //await _context.SaveChangesAsync();
 
             await Clients.Group($"Product_{productId}")
                 .SendAsync("ReceiveComment", userName, message, comment.CreatedAt.ToString("g"));
         }
+
     }
 }

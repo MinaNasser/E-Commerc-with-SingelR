@@ -15,11 +15,13 @@ namespace EShop.Presentation.Controllers
         private ProductManager ProductManager;
         private CategoryManager CategoryManager;
         private VendorManager VendorManager;
-        public ProductController(ProductManager pmanager, CategoryManager cmanager , VendorManager vendor)
+        private CommentManager commentsManger;
+        public ProductController(ProductManager pmanager, CategoryManager cmanager , VendorManager vendor, CommentManager manager)
         {
             ProductManager = pmanager;
             CategoryManager = cmanager;
             VendorManager = vendor;
+            commentsManger = manager;
         }
 
         //    .... /product/index
@@ -74,7 +76,7 @@ namespace EShop.Presentation.Controllers
             var vendor = VendorManager.GetById(v => v.UserId == vendorId);
             if (vendor == null)
             {
-                VendorManager.Add(new Vendor
+                VendorManager.AddAsync(new Vendor
                 {
                     UserId = vendorId
                 });
@@ -92,7 +94,7 @@ namespace EShop.Presentation.Controllers
                     viewModel.Paths.Add($"/Images/Products/{file.FileName}");
                 }
 
-                ProductManager.Add(viewModel.ToModel());
+                ProductManager.AddAsync(viewModel.ToModel());
                 return RedirectToAction("Index");
             }
 
@@ -107,18 +109,25 @@ namespace EShop.Presentation.Controllers
         }
         public IActionResult Details(int id)
         {
-            //var product = ProductManager.GetById(p => p.Id == id);
-            //if (product == null) return NotFound();
-
-            //return View(product);
             var product = ProductManager.GetByIdWithIncludes(
-                p => p.Id == id,
-                p => ((Product)(object)p).Comments
+                p => p.Id == id
+                
+            // ❌ لا نضمّن Comments هنا
             );
 
-            return View(product);
+            if (product == null)
+                return NotFound();
 
+            // 🟢 حمّل التعليقات يدويًا
+            var comments = commentsManger.GetCommentsByProductId(id);
+
+            var viewModel = product.ToDetailsVModel();
+            viewModel.Comments = comments.ToList();
+
+            return View(viewModel);
         }
+
+
 
 
     }

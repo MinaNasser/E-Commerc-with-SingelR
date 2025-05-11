@@ -21,6 +21,7 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<EShopContext>();
 
 builder.Services.AddScoped(typeof(AccountManager));
+builder.Services.AddScoped(typeof(CommentManager));
 builder.Services.AddScoped(typeof(RoleManager));
 builder.Services.AddScoped(typeof(VendorManager));
 builder.Services.AddScoped(typeof(ClientManager));
@@ -29,7 +30,10 @@ builder.Services.AddScoped(typeof(CategoryManager));
 
 builder.Services.AddScoped(typeof(AccountServices));
 
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(config =>
+{
+    config.EnableDetailedErrors = true;
+});
 
 #endregion
 

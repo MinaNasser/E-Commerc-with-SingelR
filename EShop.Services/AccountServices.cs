@@ -40,13 +40,13 @@ namespace EShop.Services
                 if (user.Role == "Vendor")
                 {
                     //Add Record In Vendor table
-                    vendorManager.Add(new Vendor() { UserId = currentUser.Id });
+                    vendorManager.AddAsync(new Vendor() { UserId = currentUser.Id });
                     return IdentityResult.Success;
                 }
                 else if (user.Role == "Client")
                 {
                     //Add Record In Client table
-                    clientManager.Add(new Client { UserId = currentUser.Id });
+                    clientManager.AddAsync(new Client { UserId = currentUser.Id });
                     return IdentityResult.Success;
                 }
 

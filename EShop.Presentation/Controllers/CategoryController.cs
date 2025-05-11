@@ -30,7 +30,7 @@ namespace EShop.Presentation.Controllers
         [HttpPost]
         public IActionResult Add(Category category)
         {
-            categoryManager.Add(category);
+            categoryManager.AddAsync(category);
             
             return RedirectToAction("List");
         }
