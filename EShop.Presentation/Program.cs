@@ -49,7 +49,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<CommentHub>("/commentHub");
-
+app.MapHub<BayProductHup>("/BayProductHupU");
 
 app.MapControllerRoute(
     name: "default",

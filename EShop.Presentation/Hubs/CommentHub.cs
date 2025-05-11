@@ -18,7 +18,7 @@ namespace EShop.Presentation.Hubs
             Console.WriteLine($"Client connected: {Context.ConnectionId}");
             return base.OnConnectedAsync();
         }
-
+         
         public async Task JoinProductGroup(int productId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, $"Product_{productId}");
