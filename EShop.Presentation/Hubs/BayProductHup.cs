@@ -1,16 +1,42 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using EF_Core.Models;
+using EShop.Manegers;
+using Microsoft.AspNetCore.SignalR;
 
-namespace EShop.Presentation.Hubs
+public class BayProductHup : Hub
 {
-    public class BayProductHup:Hub
-    {
+    private readonly ProductManager _productManager;
 
-        public override async Task OnConnectedAsync()
+    public BayProductHup(ProductManager productManager)
+    {
+        _productManager = productManager;
+    }
+
+    public async Task BuyProduct(int productId, int quantity)
+    {
+        try
         {
-            //all Connected  
-           await Clients.All.SendAsync("BayProduct");
-            //Console.WriteLine($"Client connected: {Context.ConnectionId}");
-            //return base.OnConnectedAsync();
-        } 
+            bool success = await _productManager.ReduceStockAsync(productId, quantity);
+
+            if (success)
+            {
+                int newQty = await _productManager.GetQuantityAsync(productId);
+                await Clients.All.SendAsync("UpdateProductQuantity", productId, newQty);
+            }
+            else
+            {
+                await Clients.Caller.SendAsync("PurchaseFailed", "❌ Not enough stock or invalid product.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("❌ Exception in BuyProduct: " + ex.Message);
+            throw;
+        }
+    }
+
+
+    public async Task JoinProductGroup(int productId)
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, productId.ToString());
     }
 }

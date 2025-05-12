@@ -8,7 +8,7 @@
     },
     {
       "library": "microsoft-signalr@8.0.7",
-      "destination": "wwwroot/microsoft-signalr/"
+      "destination": "wwwroot/lib/microsoft-signalr/"
     }
   ]
 }

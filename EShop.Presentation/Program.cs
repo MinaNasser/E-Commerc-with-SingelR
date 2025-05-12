@@ -29,6 +29,8 @@ builder.Services.AddScoped(typeof(ProductManager));
 builder.Services.AddScoped(typeof(CategoryManager)); 
 
 builder.Services.AddScoped(typeof(AccountServices));
+builder.Services.AddScoped<ProductManager>();
+
 
 builder.Services.AddSignalR(config =>
 {

@@ -2,7 +2,9 @@
 using EF_Core.Models;
 using EShop.ViewModels;
 using LinqKit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Data.Entity;
 
 namespace EShop.Manegers
 {
@@ -13,8 +15,8 @@ namespace EShop.Manegers
 
         }
         public PaginationViewModel<ProductDetailsViewModel> Search(
-            string searchText= "", decimal price = 0,
-            int categoryId = 0, string vendorId = "",int pageNumber = 1,
+            string searchText = "", decimal price = 0,
+            int categoryId = 0, string vendorId = "", int pageNumber = 1,
             int pageSize = 4)
         {
 
@@ -23,7 +25,7 @@ namespace EShop.Manegers
             var old = builder;
 
             if (!searchText.IsNullOrEmpty())
-                builder = builder.And(i => i.Name.ToLower().Contains(searchText.ToLower())|| i.Description.ToLower().Contains(searchText.ToLower()));
+                builder = builder.And(i => i.Name.ToLower().Contains(searchText.ToLower()) || i.Description.ToLower().Contains(searchText.ToLower()));
 
             if (price > 1)
                 builder = builder.And(i => i.Price <= price);
@@ -59,6 +61,24 @@ namespace EShop.Manegers
                 Total = count
             };
 
+        }
+
+
+        public async Task<bool> ReduceStockAsync(int productId, int quantity)
+        {
+            var product = await table.FindAsync(productId);
+            if (product == null || product.Quantity < quantity)
+                return false;
+
+            product.Quantity -= quantity;
+            await SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<int> GetQuantityAsync(int productId)
+        {
+            var product = table.FirstOrDefault(p => p.Id == productId);
+            return product?.Quantity ?? 0;
         }
 
 

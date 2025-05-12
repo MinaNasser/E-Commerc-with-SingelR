@@ -1,6 +1,7 @@
 ﻿using EF_Core;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace EShop.Manegers
 {
@@ -92,6 +93,11 @@ namespace EShop.Manegers
             }
 
             return query.FirstOrDefault(predicate);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await dbcontext.SaveChangesAsync();
         }
 
     }
